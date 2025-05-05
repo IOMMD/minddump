@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MindDump</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+    textarea { width: 100%; height: 150px; }
+    button { padding: 10px 20px; margin-top: 10px; }
+    pre { background: #f0f0f0; padding: 15px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>🧠 MindDump</h1>
+  <p>Feeling overwhelmed? Dump your thoughts below.</p>
+  <textarea id="input" placeholder="Type whatever’s on your mind..."></textarea><br>
+  <button onclick="sendToGPT()">Organize Me</button>
+  <pre id="output"></pre>
+
+  <script>
+    async function sendToGPT() {
+      const input = document.getElementById("input").value;
+      const output = document.getElementById("output");
+      output.textContent = "Organizing your thoughts...";
+
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer YOUR_REAL_API_KEY"
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [{ role: "user", content: `Organize this thought dump:\n\n${input}` }]
+        })
+      });
+
+      const data = await response.json();
+      output.textContent = data.choices?.[0]?.message?.content || "No response.";
+    }
+  </script>
+</body>
+</html>
